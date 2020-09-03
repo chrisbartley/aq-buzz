@@ -11,12 +11,15 @@
 #include <Wire.h>
 #include "RTClib.h"
 #include "Adafruit_FRAM_I2C.h"
+#include <neosensory_bluefruit.h>
 
 Adafruit_BMP280 bmp280;                            // temperautre and barometric pressure
 Adafruit_SHT31 sht30;                              // humidity
 Adafruit_SGP30 sgp30;                              // tVOC and eCO2
 RTC_PCF8523 rtc;                                   // real-time clock
 Adafruit_FRAM_I2C fram = Adafruit_FRAM_I2C();      // FRAM storage
+
+NeosensoryBluefruit NeoBluefruit;
 
 //----------------------------------------------------------------------------------------------------------------------
 // This stuff should go into a .h file, but I don't have time to grok Arduino's crazy build process to figure out a
@@ -39,11 +42,15 @@ typedef struct {
 } BASELINES;
 //----------------------------------------------------------------------------------------------------------------------
 
-const unsigned long DATA_SAMPLE_INTERVAL_MICROS = 1000000;   // take a sample every second
+const unsigned long DATA_SAMPLE_INTERVAL_MICROS = 500000;   // take a sample every half second
 const unsigned int SECONDS_IN_ONE_HOUR = 60 * 60;
 const unsigned int SECONDS_IN_TWELVE_HOURS = 12 * SECONDS_IN_ONE_HOUR;
 const unsigned int SECONDS_IN_ONE_DAY = 24 * SECONDS_IN_ONE_HOUR;
 const unsigned int SECONDS_IN_ONE_WEEK = 7 * SECONDS_IN_ONE_DAY;
+
+const bool BASELINES_DEBUG_MODE = false;
+const bool BUZZ_DEBUG_MODE = false;
+const float MAX_TVOC_PPB = 100.0;
 
 bool isOk = true;
 bool hasRtc = false;
@@ -77,6 +84,13 @@ void setup() {
    // Initialize the SGP30 and then try to restore its baselines from storage
    initSgp30();
    restoreBaselines();
+
+   // Setup BLE communication with the Buzz
+   NeoBluefruit.begin();
+   NeoBluefruit.setConnectedCallback(onConnectedToBuzz);
+   NeoBluefruit.setDisconnectedCallback(onDisconnectedFromBuzz);
+   NeoBluefruit.setReadNotifyCallback(onReadFromBuzz);
+   NeoBluefruit.startScan();
 }
 
 void loop() {
@@ -101,23 +115,15 @@ void loop() {
             // refresh SGP30 baselines
             refreshBaselines();
 
-            Serial.println("-----");
+            Serial.printf("Sensors: %7.2f C  %7.2f RH  %10d tVOC (ppb)  %10d eCO2 (ppm)\n",
+                          temperature,
+                          humidity,
+                          sgp30.TVOC,
+                          sgp30.eCO2);
 
-            Serial.print("Humidity: ");
-            Serial.print(humidity);
-            Serial.println(" %");
-
-            Serial.print("Temperature: ");
-            Serial.print(temperature);
-            Serial.println(" C");
-
-            Serial.print("TVOC ");
-            Serial.print(sgp30.TVOC);
-            Serial.println(" ppb");
-
-            Serial.print("eCO2 ");
-            Serial.print(sgp30.eCO2);
-            Serial.println(" ppm");
+            if (NeoBluefruit.isConnected() & NeoBluefruit.isAuthorized()) {
+               setVibration(sgp30.TVOC);
+            }
          } else {
             Serial.println("Failed to read SGP30");
             delay(250);
@@ -129,6 +135,41 @@ void loop() {
    }
 }
 
+
+//======================================================================================================================
+// Buzz
+//======================================================================================================================
+
+void setVibration(float tvoc) {
+   float intensity = (min(tvoc, MAX_TVOC_PPB) / MAX_TVOC_PPB);
+   float intensities[NeoBluefruit.num_motors()];
+   for (int i = 0; i < NeoBluefruit.num_motors(); i++) {
+      intensities[i] = intensity;
+   }
+   NeoBluefruit.vibrateMotors(intensities);
+}
+
+void onConnectedToBuzz(bool success) {
+   if (!success) {
+      Serial.println("Attempted connection to Buzz but failed.");
+      return;
+   }
+   Serial.println("Connected to Buzz!");
+   NeoBluefruit.authorizeDeveloper();
+   NeoBluefruit.acceptTermsAndConditions();
+   NeoBluefruit.stopAlgorithm();
+}
+
+void onDisconnectedFromBuzz(uint16_t conn_handle, uint8_t reason) {
+   Serial.println("\nDisconnected from Buzz.");
+}
+
+void onReadFromBuzz(BLEClientCharacteristic *chr, uint8_t *data, uint16_t len) {
+   if (!BUZZ_DEBUG_MODE) return;
+   for (int i = 0; i < len; i++) {
+      Serial.write(data[i]);
+   }
+}
 
 //======================================================================================================================
 // BMP280 (Temperature and pressure)
@@ -172,14 +213,14 @@ void initSgp30() {
    Serial.println("SGP30 ready!");
 }
 
-
 bool persistBaselines() {
    if (isBaseliningEnabled) {
 
       Serial.println("Reading baselines from sensor...");
       uint16_t eCO2Baseline, tVOCBaseline;
       if (sgp30.getIAQBaseline(&eCO2Baseline, &tVOCBaseline)) {
-         Serial.printf("Baselines successfully read from sensor, now persisting them (eco2=%d, tvoc=%d)...\n", eCO2Baseline, tVOCBaseline);
+         Serial.printf("Baselines successfully read from sensor, now persisting them (eco2=%d, tvoc=%d)...\n",
+                       eCO2Baseline, tVOCBaseline);
 
          baselines.isValid = true;
          baselines.unixTimeSecs = rtc.now().unixtime();
@@ -201,8 +242,10 @@ bool persistBaselines() {
 void refreshBaselines() {
    if (isBaseliningEnabled) {
       unsigned long elapsedSecondsSinceLastPersistence = rtc.now().unixtime() - baselines.unixTimeSecs;
-      Serial.printf("Refreshing baselines (seconds since last persistence=%d)\n",
-                    elapsedSecondsSinceLastPersistence);
+      if (BASELINES_DEBUG_MODE) {
+         Serial.printf("Refreshing baselines (seconds since last persistence=%d)\n",
+                       elapsedSecondsSinceLastPersistence);
+      }
       if (baselines.isValid) {
          // After the baselines are valid, then update the stored values hourly (as recommended by Sensirion)
          if (elapsedSecondsSinceLastPersistence >= SECONDS_IN_ONE_HOUR) {
@@ -212,10 +255,14 @@ void refreshBaselines() {
                Serial.println("Baselines valid, and older than 1 hour, but persistence to storage failed.");
             }
          } else {
-            Serial.println("Baselines valid, but younger than 1 hour, so nothing to do.");
+            if (BASELINES_DEBUG_MODE) {
+               Serial.println("Baselines valid, but younger than 1 hour, so nothing to do.");
+            }
          }
       } else {
-         Serial.println("Baselines not valid, so checking whether it has been more than 12 hours");
+         if (BASELINES_DEBUG_MODE) {
+            Serial.println("Baselines not valid, so checking whether it has been more than 12 hours");
+         }
          // Restarting the sensor without restoring a baseline will result in the sensor trying to determine a new
          // baseline. The baseline calibration algorithm will be performed on the SGP30 for 12hrs.
          if (elapsedSecondsSinceLastPersistence >= SECONDS_IN_TWELVE_HOURS) {
@@ -225,7 +272,9 @@ void refreshBaselines() {
                Serial.println("Baseline calibration complete, but persistence to storage failed.");
             }
          } else {
-            Serial.println("Baselines calibration still pending, so nothing to do.");
+            if (BASELINES_DEBUG_MODE) {
+               Serial.println("Baselines calibration still pending, so nothing to do.");
+            }
          }
       }
    } else {
