@@ -9,17 +9,11 @@
 #include <Adafruit_SHT31.h>
 #include <Adafruit_SGP30.h>
 #include <Wire.h>
-#include "RTClib.h"
-#include "Adafruit_FRAM_I2C.h"
+#include <RTClib.h>
+#include <Adafruit_FRAM_I2C.h>
 #include <neosensory_bluefruit.h>
-
-Adafruit_BMP280 bmp280;                            // temperautre and barometric pressure
-Adafruit_SHT31 sht30;                              // humidity
-Adafruit_SGP30 sgp30;                              // tVOC and eCO2
-RTC_PCF8523 rtc;                                   // real-time clock
-Adafruit_FRAM_I2C fram = Adafruit_FRAM_I2C();      // FRAM storage
-
-NeosensoryBluefruit NeoBluefruit;
+#include <CircularBuffer.h>
+#include <LinearRegression.h>
 
 //----------------------------------------------------------------------------------------------------------------------
 // This stuff should go into a .h file, but I don't have time to grok Arduino's crazy build process to figure out a
@@ -42,7 +36,12 @@ typedef struct {
 } BASELINES;
 //----------------------------------------------------------------------------------------------------------------------
 
-const unsigned long DATA_SAMPLE_INTERVAL_MICROS = 500000;   // take a sample every half second
+typedef struct {
+   double timeSecs;
+   double value;
+} DATA_SAMPLE;
+
+const unsigned long DATA_SAMPLE_INTERVAL_MILLIS = 500;     // take a sample every half second
 const unsigned int SECONDS_IN_ONE_HOUR = 60 * 60;
 const unsigned int SECONDS_IN_TWELVE_HOURS = 12 * SECONDS_IN_ONE_HOUR;
 const unsigned int SECONDS_IN_ONE_DAY = 24 * SECONDS_IN_ONE_HOUR;
@@ -50,7 +49,18 @@ const unsigned int SECONDS_IN_ONE_WEEK = 7 * SECONDS_IN_ONE_DAY;
 
 const bool BASELINES_DEBUG_MODE = false;
 const bool BUZZ_DEBUG_MODE = false;
-const float MAX_TVOC_PPB = 100.0;
+const float MAX_TVOC_PPB = 200.0;
+
+const unsigned int NUM_SAMPLES_IN_RUNNING_AVERAGE = 10;
+const unsigned int NUM_SLOPE_VIBRATION_THRESHOLDS = 7;
+
+Adafruit_BMP280 bmp280;                            // temperautre and barometric pressure
+Adafruit_SHT31 sht30;                              // humidity
+Adafruit_SGP30 sgp30;                              // tVOC and eCO2
+RTC_PCF8523 rtc;                                   // real-time clock
+Adafruit_FRAM_I2C fram = Adafruit_FRAM_I2C();      // FRAM storage
+
+NeosensoryBluefruit NeoBluefruit;
 
 bool isOk = true;
 bool hasRtc = false;
@@ -58,7 +68,12 @@ bool hasStorage = false;
 bool isBaseliningEnabled = false;
 BASELINES baselines;
 
-unsigned long previousMicros = 0;   // used for calculating when to take the next data sample
+CircularBuffer <DATA_SAMPLE, NUM_SAMPLES_IN_RUNNING_AVERAGE> dataSamples;
+LinearRegression linearRegression = LinearRegression();
+double slopeAndIntercept[2];
+float slopeVibrationPatternThresholds[NUM_SLOPE_VIBRATION_THRESHOLDS];
+
+unsigned long previousMillis = 0;   // used for calculating when to take the next data sample
 
 void setup() {
    initSerial();
@@ -85,6 +100,12 @@ void setup() {
    initSgp30();
    restoreBaselines();
 
+   // compute thresholds for slope vibration patterns
+   float radiansIncrement = (HALF_PI / (NUM_SLOPE_VIBRATION_THRESHOLDS + 1));
+   for (int i = 0; i < NUM_SLOPE_VIBRATION_THRESHOLDS; i++) {
+      slopeVibrationPatternThresholds[i] = tan(radiansIncrement * (i + 1));
+   }
+
    // Setup BLE communication with the Buzz
    NeoBluefruit.begin();
    NeoBluefruit.setConnectedCallback(onConnectedToBuzz);
@@ -95,14 +116,13 @@ void setup() {
 
 void loop() {
    if (isOk) {
-      // Get the current "time" in micros.  Note that the docs say that micros() will wrap after ~70 minutes, so elapsed
-      // micros *can* be negative, but I'm OK dropping a sample once every 70 minutes :-)  Using micros() seems to do a
-      // little bit better with consistent data sample intervals than millis().
-      unsigned long currentMicros = micros();
+      // Get the current "time" in millis.  Note that the docs say that millis() will wrap after ~50 days, so elapsed
+      // millis *can* be negative, but I'm OK dropping a sample once every 50 days :-)
+      unsigned long currentMillis = millis();
 
       // see whether it's time to take a sample
-      if (currentMicros - previousMicros >= DATA_SAMPLE_INTERVAL_MICROS) {
-         previousMicros = currentMicros;
+      if (currentMillis - previousMillis >= DATA_SAMPLE_INTERVAL_MILLIS) {
+         previousMillis = currentMillis;
 
          float humidity = sht30.readHumidity();
          float temperature = bmp280.readTemperature();
@@ -115,14 +135,43 @@ void loop() {
             // refresh SGP30 baselines
             refreshBaselines();
 
-            Serial.printf("Sensors: %7.2f C  %7.2f RH  %10d tVOC (ppb)  %10d eCO2 (ppm)\n",
-                          temperature,
-                          humidity,
-                          sgp30.TVOC,
-                          sgp30.eCO2);
+            // add this new sample to the circular buffer
+            dataSamples.push(DATA_SAMPLE{(double) currentMillis / 1000.0, (double) (sgp30.TVOC)});
 
+            // reset the linear regression
+            linearRegression.reset();
+
+            // Calculate the moving average and update the linear regression.  I know the averaging can be done more
+            // efficiently, but we need to iterate over all the items anyway to compute the linear regression, so this
+            // is fine, whatever.
+            unsigned long sum = 0;
+            using index_t = decltype(dataSamples)::index_t; // ensures we're using the right type for the index variable
+            for (index_t i = 0; i < dataSamples.size(); i++) {
+               sum += dataSamples[i].value;
+               linearRegression.learn(dataSamples[i].timeSecs, dataSamples[i].value);
+            }
+
+            // compute the average
+            float avgVoc = sum / (float) dataSamples.size();
+
+            // get the slope and Y intercept from the linear regression
+            linearRegression.parameters(slopeAndIntercept);
+
+            // print in a format that makes the Serial Plotter happy (see
+            // https://diyrobocars.com/2020/05/04/arduino-serial-plotter-the-missing-manual/)
+            Serial.print("VOC:");
+            Serial.print(sgp30.TVOC);
+            Serial.print(",");
+            Serial.print("Avg:");
+            Serial.print(avgVoc);
+            Serial.print(",");
+            Serial.print("Slope:");
+            Serial.printf("%5.5f", slopeAndIntercept[0]);
+            Serial.println();
+
+            // vibrate the buzz, if connected
             if (NeoBluefruit.isConnected() & NeoBluefruit.isAuthorized()) {
-               setVibration(sgp30.TVOC);
+               setVibration(avgVoc, slopeAndIntercept[0]);
             }
          } else {
             Serial.println("Failed to read SGP30");
@@ -135,16 +184,29 @@ void loop() {
    }
 }
 
-
 //======================================================================================================================
 // Buzz
 //======================================================================================================================
-
-void setVibration(float tvoc) {
+// Nothing super exciting here...vibrations "lean" to one side or the other (or middle) depending on slope.  I fiddled
+// a few various ramping up ideas, but I thought the pulsing was annoying and not super helpful.
+void setVibration(float tvoc, float slope) {
    float intensity = (min(tvoc, MAX_TVOC_PPB) / MAX_TVOC_PPB);
    float intensities[NeoBluefruit.num_motors()];
-   for (int i = 0; i < NeoBluefruit.num_motors(); i++) {
-      intensities[i] = intensity;
+   if (slope > 0.414) {
+      intensities[0] = intensity;
+      intensities[1] = intensity / 2;
+      intensities[2] = 0;
+      intensities[3] = 0;
+   } else if (slope < -0.414) {
+      intensities[0] = 0;
+      intensities[1] = 0;
+      intensities[2] = intensity / 2;
+      intensities[3] = intensity;
+   } else {
+      intensities[0] = 0;
+      intensities[1] = intensity;
+      intensities[2] = intensity;
+      intensities[3] = 0;
    }
    NeoBluefruit.vibrateMotors(intensities);
 }
@@ -184,7 +246,6 @@ void initBmp280() {
    Serial.println("BMP280 ready!");
 }
 
-
 //======================================================================================================================
 // SHT30 (Humidity)
 //======================================================================================================================
@@ -198,11 +259,9 @@ void initSht30() {
    Serial.println("SHT30 ready!");
 }
 
-
 //======================================================================================================================
 // SGP30 (tVOC/eCO2)
 //======================================================================================================================
-
 void initSgp30() {
    if (!sgp30.begin()) {
       Serial.println("SGP30 sensor not found, or could not be started!");
@@ -368,13 +427,13 @@ void printBaselines(String message) {
    Serial.printf("   tvoc:         %d\n", baselines.tvoc);
 }
 
-/*
- * Return absolute humidity [mg/m^3] with approximation formula
- * @param temperature [°C]
- * @param humidity [%RH]
- *
- * Based on code from https://github.com/adafruit/Adafruit_SGP30/blob/master/examples/sgp30test/sgp30test.ino
-*/
+//
+// Return absolute humidity [mg/m^3] with approximation formula
+// @param temperature [°C]
+// @param humidity [%RH]
+//
+// Based on code from https://github.com/adafruit/Adafruit_SGP30/blob/master/examples/sgp30test/sgp30test.ino
+//
 uint32_t getAbsoluteHumidity(float temperature, float relativeHumidity) {
    // clamp to [0, 100]
    relativeHumidity = min(relativeHumidity, 100);
