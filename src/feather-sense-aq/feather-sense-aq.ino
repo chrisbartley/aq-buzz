@@ -16,9 +16,10 @@
 #include <LinearRegression.h>
 
 //----------------------------------------------------------------------------------------------------------------------
-// This stuff should go into a .h file, but I don't have time to grok Arduino's crazy build process to figure out a
-// clean, quick, and proper way to do that with an .ino file.  So, for now, there's this ugly duplication...
-//
+// A lot of this stuff should go into a .h file, but I don't have time to grok Arduino's crazy build process to figure
+// out a clean, quick, and proper way to do that with an .ino file.  So, for now, there's this ugly duplication...
+//----------------------------------------------------------------------------------------------------------------------
+
 // We don't want to read baselines from storage if the baselines have never been persisted. We'll store the value
 // PERSISTENCE_DATA_EXISTS_FLAG at the PERSISTENCE_DATA_EXISTS_FLAG_BYTE_INDEX to flag that data has been persisted.
 // This is my hacky way of doing a "file" existence check.
@@ -34,7 +35,6 @@ typedef struct {
    uint16_t eco2;
    uint16_t tvoc;
 } BASELINES;
-//----------------------------------------------------------------------------------------------------------------------
 
 typedef struct {
    double timeSecs;
