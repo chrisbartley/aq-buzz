@@ -54,7 +54,7 @@ const float MAX_TVOC_PPB = 200.0;
 const unsigned int NUM_SAMPLES_IN_RUNNING_AVERAGE = 10;
 const unsigned int NUM_SLOPE_VIBRATION_THRESHOLDS = 7;
 
-Adafruit_BMP280 bmp280;                            // temperautre and barometric pressure
+Adafruit_BMP280 bmp280;                            // temperature and barometric pressure
 Adafruit_SHT31 sht30;                              // humidity
 Adafruit_SGP30 sgp30;                              // tVOC and eCO2
 RTC_PCF8523 rtc;                                   // real-time clock
