@@ -193,15 +193,15 @@ void setVibration(float tvoc, float slope) {
    float intensity = (min(tvoc, MAX_TVOC_PPB) / MAX_TVOC_PPB);
    float intensities[NeoBluefruit.num_motors()];
    if (slope > 0.414) {
-      intensities[0] = intensity;
-      intensities[1] = intensity / 2;
-      intensities[2] = 0;
-      intensities[3] = 0;
-   } else if (slope < -0.414) {
       intensities[0] = 0;
       intensities[1] = 0;
       intensities[2] = intensity / 2;
       intensities[3] = intensity;
+   } else if (slope < -0.414) {
+      intensities[0] = intensity;
+      intensities[1] = intensity / 2;
+      intensities[2] = 0;
+      intensities[3] = 0;
    } else {
       intensities[0] = 0;
       intensities[1] = intensity;
