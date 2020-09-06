@@ -71,6 +71,11 @@ const float MAX_TVOC_PPB = 200.0;
 
 const unsigned int NUM_SAMPLES_IN_RUNNING_AVERAGE = 10;
 
+// For test purposes, 0xFFFF CAN be used, but according to the Bluetooth SIG: "This value may be used in the internal
+// and interoperability tests before a Company ID has been assigned. This value shall not be used in shipping end
+// products."
+const uint16_t MANUFACTURER_COMPANY_ID = 0xFFFF;
+
 Adafruit_BMP280 bmp280;                            // temperature and barometric pressure
 Adafruit_SHT31 sht30;                              // humidity
 Adafruit_SGP30 sgp30;                              // tVOC and eCO2
@@ -89,16 +94,24 @@ double slopeAndIntercept[2];
 
 unsigned long previousMillis = 0;   // used for calculating when to take the next data sample
 
-uint8_t count1 = 0;
-uint8_t count2 = 0;
-uint8_t manufacturerDataPayload[7]; // Two bytes are required for the CID, but just add more as needed
+
+typedef struct {
+   uint16_t avgVocTimes10;
+   float slope;
+} BROADCAST_SAMPLE;
+
+BROADCAST_SAMPLE broadcastSample;
+
+uint8_t manufacturerDataPayload[sizeof(MANUFACTURER_COMPANY_ID) +
+                                sizeof(broadcastSample.avgVocTimes10) +
+                                sizeof(broadcastSample.slope)];
 
 void setup() {
    initSerial();
 
-   Serial.println("================");
-   Serial.println("Feather Sense AQ");
-   Serial.println("================\n");
+   Serial.println("==========================");
+   Serial.println("Feather Sense AQ Broadcast");
+   Serial.println("==========================\n");
 
    // initialize the real time clock
    initRtc();
@@ -174,11 +187,14 @@ void loop() {
                linearRegression.learn(dataSamples[i].timeSecs, dataSamples[i].value);
             }
 
-            // compute the average
-            float avgVoc = sum / (float) dataSamples.size();
-
             // get the slope and Y intercept from the linear regression
             linearRegression.parameters(slopeAndIntercept);
+
+            float avgVoc = sum / (float) dataSamples.size();
+            float slope = (float) slopeAndIntercept[0];
+
+            broadcastSample.avgVocTimes10 = (uint16_t)(10 * min(avgVoc, 0xFFFF / 10));
+            broadcastSample.slope = slope;
 
             // print in a format that makes the Serial Plotter happy (see
             // https://diyrobocars.com/2020/05/04/arduino-serial-plotter-the-missing-manual/)
@@ -188,19 +204,13 @@ void loop() {
             Serial.print("Avg:");
             Serial.print(avgVoc);
             Serial.print(",");
+            Serial.print("Avg10:");
+            Serial.print(broadcastSample.avgVocTimes10);
+            Serial.print(",");
             Serial.print("Slope:");
-            Serial.printf("%5.5f", slopeAndIntercept[0]);
+            Serial.printf("%5.5f", slope);
             Serial.println();
 
-            // broadcast values in advertisement (TODO)
-            count1 = count1 + 1;
-            count2 = count2 + 2;
-            if (count1 > 200) {
-               count1 = 0;
-            }
-            if (count2 > 200) {
-               count2 = 0;
-            }
             createAdvertisement();
          } else {
             Serial.println("Failed to read SGP30");
@@ -242,18 +252,29 @@ void createAdvertisement() {
    // Not enough room in the advertising packet for name so store it in the Scan Response instead
    Bluefruit.ScanResponse.addName();
 
-   // For test purposes, 0xFFFF CAN be used, but according to the Bluetooth SIG:
-   // > "This value may be used in the internal and interoperability tests before a
-   // >  Company ID has been assigned. This value shall not be used in shipping end
-   // >  products."
-   uint16_t msd_cid = 0xFFFF;
+   // clear out the payload
    memset(manufacturerDataPayload, 0, sizeof(manufacturerDataPayload));
-   memcpy(manufacturerDataPayload, (uint8_t * ) & msd_cid, sizeof(msd_cid));
-   manufacturerDataPayload[2] = 0x2A;
-   manufacturerDataPayload[3] = count1;
-   manufacturerDataPayload[4] = count2;
-   manufacturerDataPayload[5] = count1 + 10;
-   manufacturerDataPayload[6] = count2 + 10;
+
+   // copy in the company ID
+   memcpy(manufacturerDataPayload, (uint8_t * ) & MANUFACTURER_COMPANY_ID, sizeof(MANUFACTURER_COMPANY_ID));
+
+   // copy the avg VOC x 10
+   manufacturerDataPayload[2] = highByte(broadcastSample.avgVocTimes10);
+   manufacturerDataPayload[3] = lowByte(broadcastSample.avgVocTimes10);
+
+   // finally, copy the slope
+   // union makes for an easy way to get a float as bytes (see https://stackoverflow.com/a/24420279/703200)
+   union {
+      float val;
+      unsigned char bytes[sizeof(float)];
+   } floatByteArray;
+
+   floatByteArray.val = broadcastSample.slope;
+   manufacturerDataPayload[4] = floatByteArray.bytes[0];
+   manufacturerDataPayload[5] = floatByteArray.bytes[1];
+   manufacturerDataPayload[6] = floatByteArray.bytes[2];
+   manufacturerDataPayload[7] = floatByteArray.bytes[3];
+
    Bluefruit.ScanResponse.addManufacturerData(manufacturerDataPayload, sizeof(manufacturerDataPayload));
 }
 
