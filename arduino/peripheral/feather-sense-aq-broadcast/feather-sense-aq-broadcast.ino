@@ -20,10 +20,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 #define NO_ADVERTISING_TIMEOUT   0 // seconds
 
-// Custom UUID used to differentiate this device. Note that the byte order is reversed.  The CUSTOM_UUID below
-// corresponds to the follow value:
-// 42610000-7274-6c65-7946-656174686572
-const uint8_t CUSTOM_UUID[] =
+// Custom UUID used to differentiate this device. Note that the byte order is reversed.
+// The UUID below corresponds to 42610000-7274-6c65-7946-656174686572
+const uint8_t SERVICE_UUID[] =
       {
             0x72, 0x65, 0x68, 0x74, 0x61, 0x65, 0x46, 0x79,
             0x65, 0x6c, 0x74, 0x72, 0x00, 0x00, 0x61, 0x42
@@ -31,7 +30,7 @@ const uint8_t CUSTOM_UUID[] =
 
 const char ADVERTISING_NAME_PREFIX[] = "Feather";
 
-BLEUuid uuid = BLEUuid(CUSTOM_UUID);
+BLEUuid uuid = BLEUuid(SERVICE_UUID);
 
 //----------------------------------------------------------------------------------------------------------------------
 // A lot of this stuff should go into a .h file, but I don't have time to grok Arduino's crazy build process to figure
