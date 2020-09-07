@@ -10,6 +10,7 @@ import Foundation
 
 public protocol FeatherAQDelegate: class {
    func featherAQ(_ featherAQ: FeatherAQ, areNotificationsEnabled: Bool, error: Error?)
+   func featherAQ(_ featherAQ: FeatherAQ, rssi: NSNumber)
    func featherAQ(_ featherAQ: FeatherAQ, dataSample: FeatherAQ.DataSample)
    func featherAQ(_ featherAQ: FeatherAQ, errorGettingDataSample error: Error)
 }

@@ -19,7 +19,6 @@ class ViewController: UIViewController {
    @IBOutlet var featherMainStackView: UIStackView!
 
    @IBOutlet var buzzIdLabel: UILabel!
-   @IBOutlet var serialNumberLabel: UILabel!
    @IBOutlet var batteryLabel: UILabel!
 
    @IBOutlet var featherNameLabel: UILabel!
@@ -167,6 +166,7 @@ extension ViewController: FeatherAQManagerDelegate {
          }
 
          self.feather = feather
+         self.feather?.enableRSSIUpdates()
 
          // register self as delegate and enable notifications
          feather.delegate = self
@@ -236,7 +236,6 @@ extension ViewController: BuzzDelegate {
 
       DispatchQueue.main.async {
          self.buzzIdLabel.text = "Buzz \(deviceInfo.id)"
-         self.serialNumberLabel.text = deviceInfo.serialNumber
 
          self.queryingDeviceStackView.isHidden = true
          self.buzzMainStackView.isHidden = false
@@ -281,11 +280,19 @@ extension ViewController: FeatherAQDelegate {
       }
    }
 
+   func featherAQ(_ featherAQ: FeatherAQ, rssi: NSNumber) {
+      DispatchQueue.main.async {
+         self.rssiLabel.text = "\(rssi)"
+      }
+   }
+
    func featherAQ(_ featherAQ: FeatherAQ, dataSample: FeatherAQ.DataSample) {
-      print("FEATHER DATA SAMPLE: \(dataSample)")
+      DispatchQueue.main.async {
+         self.tvocLabel.text = "\(dataSample.avgTvoc) ppb"
+      }
    }
 
    func featherAQ(_ featherAQ: FeatherAQ, errorGettingDataSample error: Error) {
-      print("ERROR GETTING FEATHER DATA SAMPLE: \(error)")
+      // TODO:
    }
 }
