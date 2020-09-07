@@ -1,0 +1,407 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		831C74282504B61C00124457 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831C74272504B61C00124457 /* AppDelegate.swift */; };
+		831C742A2504B61C00124457 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831C74292504B61C00124457 /* ViewController.swift */; };
+		831C742D2504B61D00124457 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 831C742B2504B61D00124457 /* Main.storyboard */; };
+		831C742F2504B61E00124457 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 831C742E2504B61E00124457 /* Assets.xcassets */; };
+		831C74322504B61E00124457 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 831C74302504B61E00124457 /* LaunchScreen.storyboard */; };
+		8379CF372504B7A800764923 /* BuzzBLE in Frameworks */ = {isa = PBXBuildFile; productRef = 8379CF362504B7A800764923 /* BuzzBLE */; };
+		8379CF3A2504B7B400764923 /* BirdbrainBLE in Frameworks */ = {isa = PBXBuildFile; productRef = 8379CF392504B7B400764923 /* BirdbrainBLE */; };
+		8379CF3C2505804300764923 /* FeatherAQManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379CF3B2505804300764923 /* FeatherAQManagerDelegate.swift */; };
+		8379CF3E2505806C00764923 /* FeatherAQDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379CF3D2505806C00764923 /* FeatherAQDelegate.swift */; };
+		8379CF402505873C00764923 /* FeatherAQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379CF3F2505873C00764923 /* FeatherAQ.swift */; };
+		8379CF43250587F100764923 /* FeatherAQManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379CF42250587F100764923 /* FeatherAQManager.swift */; };
+		8379CF452505D48D00764923 /* OSLogExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379CF442505D48D00764923 /* OSLogExtension.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		831C74242504B61C00124457 /* AQ Buzz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AQ Buzz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		831C74272504B61C00124457 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		831C74292504B61C00124457 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		831C742C2504B61D00124457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		831C742E2504B61E00124457 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		831C74312504B61E00124457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		831C74332504B61E00124457 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8379CF3B2505804300764923 /* FeatherAQManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQManagerDelegate.swift; sourceTree = "<group>"; };
+		8379CF3D2505806C00764923 /* FeatherAQDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQDelegate.swift; sourceTree = "<group>"; };
+		8379CF3F2505873C00764923 /* FeatherAQ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQ.swift; sourceTree = "<group>"; };
+		8379CF42250587F100764923 /* FeatherAQManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQManager.swift; sourceTree = "<group>"; };
+		8379CF442505D48D00764923 /* OSLogExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLogExtension.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		831C74212504B61C00124457 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8379CF3A2504B7B400764923 /* BirdbrainBLE in Frameworks */,
+				8379CF372504B7A800764923 /* BuzzBLE in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		831C741B2504B61C00124457 = {
+			isa = PBXGroup;
+			children = (
+				831C74262504B61C00124457 /* AQ Buzz */,
+				831C74252504B61C00124457 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		831C74252504B61C00124457 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				831C74242504B61C00124457 /* AQ Buzz.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		831C74262504B61C00124457 /* AQ Buzz */ = {
+			isa = PBXGroup;
+			children = (
+				831C74272504B61C00124457 /* AppDelegate.swift */,
+				831C74292504B61C00124457 /* ViewController.swift */,
+				831C742B2504B61D00124457 /* Main.storyboard */,
+				8379CF3F2505873C00764923 /* FeatherAQ.swift */,
+				8379CF3D2505806C00764923 /* FeatherAQDelegate.swift */,
+				8379CF42250587F100764923 /* FeatherAQManager.swift */,
+				8379CF3B2505804300764923 /* FeatherAQManagerDelegate.swift */,
+				831C742E2504B61E00124457 /* Assets.xcassets */,
+				831C74302504B61E00124457 /* LaunchScreen.storyboard */,
+				831C74332504B61E00124457 /* Info.plist */,
+				8379CF442505D48D00764923 /* OSLogExtension.swift */,
+			);
+			path = "AQ Buzz";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		831C74232504B61C00124457 /* AQ Buzz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 831C74362504B61E00124457 /* Build configuration list for PBXNativeTarget "AQ Buzz" */;
+			buildPhases = (
+				831C74202504B61C00124457 /* Sources */,
+				831C74212504B61C00124457 /* Frameworks */,
+				831C74222504B61C00124457 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "AQ Buzz";
+			packageProductDependencies = (
+				8379CF362504B7A800764923 /* BuzzBLE */,
+				8379CF392504B7B400764923 /* BirdbrainBLE */,
+			);
+			productName = "AQ Buzz";
+			productReference = 831C74242504B61C00124457 /* AQ Buzz.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		831C741C2504B61C00124457 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1030;
+				LastUpgradeCheck = 1030;
+				ORGANIZATIONNAME = "Chris Bartley";
+				TargetAttributes = {
+					831C74232504B61C00124457 = {
+						CreatedOnToolsVersion = 10.3;
+					};
+				};
+			};
+			buildConfigurationList = 831C741F2504B61C00124457 /* Build configuration list for PBXProject "AQ Buzz" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 831C741B2504B61C00124457;
+			packageReferences = (
+				8379CF352504B7A800764923 /* XCRemoteSwiftPackageReference "BuzzBLE" */,
+				8379CF382504B7B400764923 /* XCRemoteSwiftPackageReference "BirdbrainBLE" */,
+			);
+			productRefGroup = 831C74252504B61C00124457 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				831C74232504B61C00124457 /* AQ Buzz */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		831C74222504B61C00124457 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				831C74322504B61E00124457 /* LaunchScreen.storyboard in Resources */,
+				831C742F2504B61E00124457 /* Assets.xcassets in Resources */,
+				831C742D2504B61D00124457 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		831C74202504B61C00124457 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8379CF3C2505804300764923 /* FeatherAQManagerDelegate.swift in Sources */,
+				8379CF452505D48D00764923 /* OSLogExtension.swift in Sources */,
+				831C742A2504B61C00124457 /* ViewController.swift in Sources */,
+				8379CF402505873C00764923 /* FeatherAQ.swift in Sources */,
+				8379CF43250587F100764923 /* FeatherAQManager.swift in Sources */,
+				8379CF3E2505806C00764923 /* FeatherAQDelegate.swift in Sources */,
+				831C74282504B61C00124457 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		831C742B2504B61D00124457 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				831C742C2504B61D00124457 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		831C74302504B61E00124457 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				831C74312504B61E00124457 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		831C74342504B61E00124457 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		831C74352504B61E00124457 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		831C74372504B61E00124457 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U86S5DBKFZ;
+				INFOPLIST_FILE = "AQ Buzz/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chrisbartley.aq-buzz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		831C74382504B61E00124457 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U86S5DBKFZ;
+				INFOPLIST_FILE = "AQ Buzz/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chrisbartley.aq-buzz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		831C741F2504B61C00124457 /* Build configuration list for PBXProject "AQ Buzz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				831C74342504B61E00124457 /* Debug */,
+				831C74352504B61E00124457 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		831C74362504B61E00124457 /* Build configuration list for PBXNativeTarget "AQ Buzz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				831C74372504B61E00124457 /* Debug */,
+				831C74382504B61E00124457 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8379CF352504B7A800764923 /* XCRemoteSwiftPackageReference "BuzzBLE" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:chrisbartley/BuzzBLE.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		8379CF382504B7B400764923 /* XCRemoteSwiftPackageReference "BirdbrainBLE" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:chrisbartley/BirdbrainBLE.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8379CF362504B7A800764923 /* BuzzBLE */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8379CF352504B7A800764923 /* XCRemoteSwiftPackageReference "BuzzBLE" */;
+			productName = BuzzBLE;
+		};
+		8379CF392504B7B400764923 /* BirdbrainBLE */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8379CF382504B7B400764923 /* XCRemoteSwiftPackageReference "BirdbrainBLE" */;
+			productName = BirdbrainBLE;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 831C741C2504B61C00124457 /* Project object */;
+}
