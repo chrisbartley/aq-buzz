@@ -58,6 +58,9 @@ class ViewController: UIViewController {
    }
 
    private func updateFeathersTable() {
+      // sort by RSSI, so that nearest is first
+      feathers.sort { $0.rssi.compare($1.rssi) == .orderedDescending }
+
       DispatchQueue.main.async {
          self.featherTableView.reloadData()
       }
@@ -176,15 +179,9 @@ extension ViewController: BuzzManagerDelegate {
       if !feathers.isEmpty {
          // make sure we have a Buzz connected
          if let buzz = buzz {
-            // find the nearest feather
-            var nearestFeather = feathers[0]
-            for i in 1..<feathers.count {
-               let feather = feathers[i]
-               // if this one has a greater RSSI than the previous, then it's the new nearest one
-               if feather.rssi.compare(nearestFeather.rssi) == .orderedDescending {
-                  nearestFeather = feather
-               }
-            }
+            // count on the RSSI sorting in updateFeathersTable() to ensure
+            // that the nearest feather is the first one in the feathers array
+            let nearestFeather = feathers[0]
 
             // compute intensities then send to the Buzz
             let intensity: UInt8 = UInt8((max(0, min(nearestFeather.avgTvoc, maxVoc)) / maxVoc) * Float(ViewController.maxBuzzIntensity))
