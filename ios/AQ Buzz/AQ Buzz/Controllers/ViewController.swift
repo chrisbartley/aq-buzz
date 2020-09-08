@@ -10,6 +10,22 @@ import UIKit
 import CoreBluetooth
 import BuzzBLE
 
+struct ConnectedFeather {
+   let uuid: UUID
+   let name: String
+   let avgTvoc: Float
+   let slope: Float
+   let rssi: NSNumber
+
+   init(uuid: UUID, name: String, avgTvoc: Float = 0.0, slope: Float = 0.0, rssi: NSNumber = 0) {
+      self.uuid = uuid
+      self.name = name
+      self.avgTvoc = avgTvoc
+      self.slope = slope
+      self.rssi = rssi
+   }
+}
+
 class ViewController: UIViewController {
    private static let maxBuzzIntensity: UInt8 = 255
 
@@ -18,20 +34,16 @@ class ViewController: UIViewController {
    @IBOutlet var buzzMainStackView: UIStackView!
 
    @IBOutlet var featherScanningStackView: UIStackView!
-   @IBOutlet var featherMainStackView: UIStackView!
+   @IBOutlet var featherTableView: UITableView!
 
    @IBOutlet var buzzIdLabel: UILabel!
    @IBOutlet var batteryLabel: UILabel!
-
-   @IBOutlet var featherNameLabel: UILabel!
-   @IBOutlet var tvocLabel: UILabel!
-   @IBOutlet var rssiLabel: UILabel!
 
    private let buzzManager = BuzzManager()
    private let featherManager = FeatherAQManager()
 
    private var buzz: Buzz?
-   private var feather: FeatherAQ?
+   private var feathers = [ConnectedFeather]()
 
    // TODO: let user change this in the UI, and maybe the min, too
    private let maxVoc: Float = 300.0
@@ -39,10 +51,49 @@ class ViewController: UIViewController {
    override func viewDidLoad() {
       super.viewDidLoad()
 
+      featherTableView.dataSource = self
+
       buzzManager.delegate = self
       featherManager.delegate = self
    }
+
+   private func updateFeathersTable() {
+      DispatchQueue.main.async {
+         self.featherTableView.reloadData()
+      }
+   }
 }
+
+// MARK: - UITableViewDataSource
+
+extension ViewController: UITableViewDataSource {
+   func numberOfSections(in tableView: UITableView) -> Int {
+      return 1
+   }
+
+   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+      return feathers.count
+   }
+
+   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+      // Table view cells are reused and should be dequeued using a cell identifier.
+      let cellIdentifier = "FeatherTableViewCell"
+
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? FeatherTableViewCell else {
+         fatalError("The dequeued cell is not an instance of FeatherTableViewCell.")
+      }
+
+      let feather = feathers[indexPath.row]
+
+      cell.nameLabel.text = feather.name
+      cell.tvocLabel.text = "\(feather.avgTvoc) ppb"
+      cell.rssiLabel.text = "\(feather.rssi)"
+
+      return cell
+   }
+}
+
+// MARK: - BuzzManagerDelegate
 
 extension ViewController: BuzzManagerDelegate {
    private func scanForBuzz() {
@@ -120,33 +171,49 @@ extension ViewController: BuzzManagerDelegate {
       print("BuzzManagerDelegate.didFailToConnectTo: uuid=\(uuid)")
    }
 
-   private func setBuzzVibration(dataSample: FeatherAQ.DataSample) {
-      // make sure we have a Buzz connected
-      if let buzz = buzz {
-         let intensity: UInt8 = UInt8((max(0, min(dataSample.avgTvoc, maxVoc)) / maxVoc) * Float(ViewController.maxBuzzIntensity))
+   private func updateBuzzVibration() {
+      // nothing to do if no feathers are connected
+      if !feathers.isEmpty {
+         // make sure we have a Buzz connected
+         if let buzz = buzz {
+            // find the nearest feather
+            var nearestFeather = feathers[0]
+            for i in 1..<feathers.count {
+               let feather = feathers[i]
+               // if this one has a greater RSSI than the previous, then it's the new nearest one
+               if feather.rssi.compare(nearestFeather.rssi) == .orderedDescending {
+                  nearestFeather = feather
+               }
+            }
 
-         var intensities: [UInt8] = [0, 0, 0, 0]
+            // compute intensities then send to the Buzz
+            let intensity: UInt8 = UInt8((max(0, min(nearestFeather.avgTvoc, maxVoc)) / maxVoc) * Float(ViewController.maxBuzzIntensity))
 
-         if dataSample.slope > 0.414 {
-            intensities[2] = intensity / 2
-            intensities[3] = intensity
-         } else if dataSample.slope < -0.414 {
-            intensities[0] = intensity
-            intensities[1] = intensity / 2
-         } else {
-            intensities[1] = intensity
-            intensities[2] = intensity
+            var intensities: [UInt8] = [0, 0, 0, 0]
+
+            if nearestFeather.slope > 0.414 {
+               intensities[2] = intensity / 2
+               intensities[3] = intensity
+            } else if nearestFeather.slope < -0.414 {
+               intensities[0] = intensity
+               intensities[1] = intensity / 2
+            } else {
+               intensities[1] = intensity
+               intensities[2] = intensity
+            }
+
+            buzz.sendMotorsCommand(data: intensities)
          }
-
-         buzz.sendMotorsCommand(data: intensities)
       }
    }
 }
 
+// MARK: - FeatherAQManagerDelegate
+
 extension ViewController: FeatherAQManagerDelegate {
    private func scanForFeather() {
       featherScanningStackView.isHidden = false
-      featherMainStackView.isHidden = true
+      featherTableView.isHidden = feathers.isEmpty
 
       if featherManager.startScanning(timeoutSecs: -1, assumeDisappearanceAfter: 1) {
          print("Scanning for Feather AQ devices started!")
@@ -185,24 +252,28 @@ extension ViewController: FeatherAQManagerDelegate {
       if let feather = featherManager.getFeatherAQ(uuid: uuid) {
          print("FeatherAQManagerDelegate.didConnectTo: uuid=\(uuid)")
 
-         // stop scanning
-         if featherManager.stopScanning() {
-            print("FeatherAQManagerDelegate: Scanning stopped")
-         } else {
-            print("FeatherAQManagerDelegate: Failed to stop scanning!")
-         }
-
-         self.feather = feather
-         self.feather?.enableRSSIUpdates()
+         // stop scanning TODO
+//         if featherManager.stopScanning() {
+//            print("FeatherAQManagerDelegate: Scanning stopped")
+//         } else {
+//            print("FeatherAQManagerDelegate: Failed to stop scanning!")
+//         }
 
          // register self as delegate and enable notifications
          feather.delegate = self
          feather.enableNotifications()
 
+         // add the new feather to the table
+         feathers.append(ConnectedFeather(uuid: feather.uuid,
+                                          name: feather.name ?? "FeatherAQ"))
+
+         // turn on RSSI updates
+         feather.enableRSSIUpdates()
+
          DispatchQueue.main.async {
-            self.featherNameLabel.text = feather.name ?? "FeatherAQ"
             self.featherScanningStackView.isHidden = true
-            self.featherMainStackView.isHidden = false
+            self.featherTableView.isHidden = self.feathers.isEmpty
+            self.updateFeathersTable()
          }
       } else {
          print("FeatherAQManagerDelegate.didConnectTo: received didConnectTo, but featherManager doesn't recognize UUID \(uuid)")
@@ -212,13 +283,19 @@ extension ViewController: FeatherAQManagerDelegate {
    func didDisconnectFrom(_ featherAQManager: FeatherAQManager, uuid: UUID, error: Error?) {
       print("FeatherAQManagerDelegate.didDisconnectFrom: uuid=\(uuid)")
 
-      feather = nil
+      feathers.removeAll(where: { (feather) -> Bool in
+         feather.uuid == uuid
+      })
+      updateFeathersTable()
 
-      // no feather, so stop the buzz's vibration
-      if let buzz = buzz {
-         buzz.stopMotors()
+      // if no feathers are left, then stop the motor vibration
+      if feathers.isEmpty {
+         if let buzz = buzz {
+            buzz.stopMotors()
+         }
       }
 
+      // TODO:
       scanForFeather()
    }
 
@@ -226,6 +303,8 @@ extension ViewController: FeatherAQManagerDelegate {
       print("FeatherAQManagerDelegate.didFailToConnectTo: uuid=\(uuid)")
    }
 }
+
+// MARK: - BuzzDelegate
 
 extension ViewController: BuzzDelegate {
    func buzz(_ buzz: Buzz, isCommunicationEnabled: Bool, error: Error?) {
@@ -303,6 +382,8 @@ extension ViewController: BuzzDelegate {
    }
 }
 
+// MARK: - FeatherAQDelegate
+
 extension ViewController: FeatherAQDelegate {
    func featherAQ(_ featherAQ: FeatherAQ, areNotificationsEnabled: Bool, error: Error?) {
       if let error = error {
@@ -313,17 +394,38 @@ extension ViewController: FeatherAQDelegate {
    }
 
    func featherAQ(_ featherAQ: FeatherAQ, rssi: NSNumber) {
-      DispatchQueue.main.async {
-         self.rssiLabel.text = "\(rssi)"
+      // find this feather in the collection, then update its RSSI
+      for i in 0..<feathers.count {
+         let feather = feathers[i]
+         if feather.uuid == featherAQ.uuid {
+            feathers[i] = ConnectedFeather(uuid: feather.uuid,
+                                           name: feather.name,
+                                           avgTvoc: feather.avgTvoc,
+                                           slope: feather.slope,
+                                           rssi: rssi)
+            updateFeathersTable()
+            break
+         }
       }
    }
 
    func featherAQ(_ featherAQ: FeatherAQ, dataSample: FeatherAQ.DataSample) {
-      setBuzzVibration(dataSample: dataSample)
-
-      DispatchQueue.main.async {
-         self.tvocLabel.text = "\(dataSample.avgTvoc) ppb"
+      // find this feather in the collection, then update its tVOC
+      for i in 0..<feathers.count {
+         let feather = feathers[i]
+         if feather.uuid == featherAQ.uuid {
+            feathers[i] = ConnectedFeather(uuid: feather.uuid,
+                                           name: feather.name,
+                                           avgTvoc: dataSample.avgTvoc,
+                                           slope: feather.slope,
+                                           rssi: feather.rssi)
+            updateFeathersTable()
+            break
+         }
       }
+
+      // update the Buzz vibration for the nearest feather
+      updateBuzzVibration()
    }
 
    func featherAQ(_ featherAQ: FeatherAQ, errorGettingDataSample error: Error) {
