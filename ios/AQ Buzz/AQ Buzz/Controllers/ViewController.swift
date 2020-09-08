@@ -89,8 +89,8 @@ extension ViewController: UITableViewDataSource {
       let feather = feathers[indexPath.row]
 
       cell.nameLabel.text = feather.name
-      cell.tvocLabel.text = "\(feather.avgTvoc) ppb"
-      cell.rssiLabel.text = "\(feather.rssi)"
+      cell.tvocLabel.text = "\(feather.avgTvoc)"
+      cell.rssiLabel.text = "RSSI: \(feather.rssi)"
 
       return cell
    }
