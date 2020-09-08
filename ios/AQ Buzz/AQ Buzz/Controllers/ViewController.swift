@@ -252,13 +252,6 @@ extension ViewController: FeatherAQManagerDelegate {
       if let feather = featherManager.getFeatherAQ(uuid: uuid) {
          print("FeatherAQManagerDelegate.didConnectTo: uuid=\(uuid)")
 
-         // stop scanning TODO
-//         if featherManager.stopScanning() {
-//            print("FeatherAQManagerDelegate: Scanning stopped")
-//         } else {
-//            print("FeatherAQManagerDelegate: Failed to stop scanning!")
-//         }
-
          // register self as delegate and enable notifications
          feather.delegate = self
          feather.enableNotifications()
@@ -295,7 +288,6 @@ extension ViewController: FeatherAQManagerDelegate {
          }
       }
 
-      // TODO:
       scanForFeather()
    }
 
