@@ -11,6 +11,8 @@ import CoreBluetooth
 import BuzzBLE
 
 class ViewController: UIViewController {
+   private static let maxBuzzIntensity: UInt8 = 255
+
    @IBOutlet var buzzScanningStackView: UIStackView!
    @IBOutlet var queryingDeviceStackView: UIStackView!
    @IBOutlet var buzzMainStackView: UIStackView!
@@ -30,6 +32,9 @@ class ViewController: UIViewController {
 
    private var buzz: Buzz?
    private var feather: FeatherAQ?
+
+   // TODO: let user change this in the UI, and maybe the min, too
+   private let maxVoc: Float = 300.0
 
    override func viewDidLoad() {
       super.viewDidLoad()
@@ -114,6 +119,28 @@ extension ViewController: BuzzManagerDelegate {
    func didFailToConnectTo(_ buzzManager: BuzzManager, uuid: UUID, error: Error?) {
       print("BuzzManagerDelegate.didFailToConnectTo: uuid=\(uuid)")
    }
+
+   private func setBuzzVibration(dataSample: FeatherAQ.DataSample) {
+      // make sure we have a Buzz connected
+      if let buzz = buzz {
+         let intensity: UInt8 = UInt8((max(0, min(dataSample.avgTvoc, maxVoc)) / maxVoc) * Float(ViewController.maxBuzzIntensity))
+
+         var intensities: [UInt8] = [0, 0, 0, 0]
+
+         if dataSample.slope > 0.414 {
+            intensities[2] = intensity / 2
+            intensities[3] = intensity
+         } else if dataSample.slope < -0.414 {
+            intensities[0] = intensity
+            intensities[1] = intensity / 2
+         } else {
+            intensities[1] = intensity
+            intensities[2] = intensity
+         }
+
+         buzz.sendMotorsCommand(data: intensities)
+      }
+   }
 }
 
 extension ViewController: FeatherAQManagerDelegate {
@@ -186,6 +213,11 @@ extension ViewController: FeatherAQManagerDelegate {
       print("FeatherAQManagerDelegate.didDisconnectFrom: uuid=\(uuid)")
 
       feather = nil
+
+      // no feather, so stop the buzz's vibration
+      if let buzz = buzz {
+         buzz.stopMotors()
+      }
 
       scanForFeather()
    }
@@ -287,6 +319,8 @@ extension ViewController: FeatherAQDelegate {
    }
 
    func featherAQ(_ featherAQ: FeatherAQ, dataSample: FeatherAQ.DataSample) {
+      setBuzzVibration(dataSample: dataSample)
+
       DispatchQueue.main.async {
          self.tvocLabel.text = "\(dataSample.avgTvoc) ppb"
       }
