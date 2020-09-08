@@ -12,6 +12,7 @@
 		831C742D2504B61D00124457 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 831C742B2504B61D00124457 /* Main.storyboard */; };
 		831C742F2504B61E00124457 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 831C742E2504B61E00124457 /* Assets.xcassets */; };
 		831C74322504B61E00124457 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 831C74302504B61E00124457 /* LaunchScreen.storyboard */; };
+		8321FF2C25070B92004F866C /* FeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8321FF2B25070B92004F866C /* FeatherTableViewCell.swift */; };
 		8379CF372504B7A800764923 /* BuzzBLE in Frameworks */ = {isa = PBXBuildFile; productRef = 8379CF362504B7A800764923 /* BuzzBLE */; };
 		8379CF3A2504B7B400764923 /* BirdbrainBLE in Frameworks */ = {isa = PBXBuildFile; productRef = 8379CF392504B7B400764923 /* BirdbrainBLE */; };
 		8379CF3C2505804300764923 /* FeatherAQManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379CF3B2505804300764923 /* FeatherAQManagerDelegate.swift */; };
@@ -29,6 +30,7 @@
 		831C742E2504B61E00124457 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		831C74312504B61E00124457 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		831C74332504B61E00124457 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8321FF2B25070B92004F866C /* FeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherTableViewCell.swift; sourceTree = "<group>"; };
 		8379CF3B2505804300764923 /* FeatherAQManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQManagerDelegate.swift; sourceTree = "<group>"; };
 		8379CF3D2505806C00764923 /* FeatherAQDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQDelegate.swift; sourceTree = "<group>"; };
 		8379CF3F2505873C00764923 /* FeatherAQ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatherAQ.swift; sourceTree = "<group>"; };
@@ -68,19 +70,44 @@
 		831C74262504B61C00124457 /* AQ Buzz */ = {
 			isa = PBXGroup;
 			children = (
+				8379CF442505D48D00764923 /* OSLogExtension.swift */,
 				831C74272504B61C00124457 /* AppDelegate.swift */,
-				831C74292504B61C00124457 /* ViewController.swift */,
+				8321FF2E25070BF9004F866C /* Models */,
+				8321FF2D25070BEB004F866C /* Views */,
+				8321FF2F25070C0C004F866C /* Controllers */,
+				831C742E2504B61E00124457 /* Assets.xcassets */,
+				831C74332504B61E00124457 /* Info.plist */,
+			);
+			path = "AQ Buzz";
+			sourceTree = "<group>";
+		};
+		8321FF2D25070BEB004F866C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				831C74302504B61E00124457 /* LaunchScreen.storyboard */,
 				831C742B2504B61D00124457 /* Main.storyboard */,
+				8321FF2B25070B92004F866C /* FeatherTableViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		8321FF2E25070BF9004F866C /* Models */ = {
+			isa = PBXGroup;
+			children = (
 				8379CF3F2505873C00764923 /* FeatherAQ.swift */,
 				8379CF3D2505806C00764923 /* FeatherAQDelegate.swift */,
 				8379CF42250587F100764923 /* FeatherAQManager.swift */,
 				8379CF3B2505804300764923 /* FeatherAQManagerDelegate.swift */,
-				831C742E2504B61E00124457 /* Assets.xcassets */,
-				831C74302504B61E00124457 /* LaunchScreen.storyboard */,
-				831C74332504B61E00124457 /* Info.plist */,
-				8379CF442505D48D00764923 /* OSLogExtension.swift */,
 			);
-			path = "AQ Buzz";
+			path = Models;
+			sourceTree = "<group>";
+		};
+		8321FF2F25070C0C004F866C /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				831C74292504B61C00124457 /* ViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,6 +196,7 @@
 				8379CF43250587F100764923 /* FeatherAQManager.swift in Sources */,
 				8379CF3E2505806C00764923 /* FeatherAQDelegate.swift in Sources */,
 				831C74282504B61C00124457 /* AppDelegate.swift in Sources */,
+				8321FF2C25070B92004F866C /* FeatherTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
