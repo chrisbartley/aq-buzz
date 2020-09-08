@@ -127,7 +127,8 @@ extension FeatherAQManager: BLECentralManagerDelegate {
    }
 
    public func didDisconnectFromPeripheral(uuid: UUID, error: Error?) {
-      if let _ = connectedDevices.removeValue(forKey: uuid) {
+      if let feather = connectedDevices.removeValue(forKey: uuid) {
+         feather.disableRSSIUpdates()
          delegate?.didDisconnectFrom(self, uuid: uuid, error: error)
       }
    }
