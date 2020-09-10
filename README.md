@@ -37,7 +37,7 @@ Following are brief discussions of each of the above three network topologies, a
 
 In this scenario, a single Arduino device is the BLE central, communicating directly with the Buzz.  An example use case could be wearing the Arduino (e.g. battery-powered, and on a wrist strap) and having it continuosly monitor VOCs in your immediate vicinity, which you feel with the Buzz.
 
-Relevant Arduino code is under `arduino/central`.
+Relevant Arduino code is under [`arduino/central`](https://github.com/chrisbartley/aq-buzz/blob/master/arduino/central).
 
 ### iOS App as Central + Arduino(s) as Connected Peripheral(s)
 
@@ -50,7 +50,7 @@ This scenario consists of one or more Arduino devices as BLE peripherals, with a
     
 For this implementation, I chose for the Arduino peripherals to publish data samples via a single BLE notify characteristic.  The central subscribes to notifications, and the peripheral publishes them on a periodic basis (here, 1 Hz).
 
-Relevant Arduino code is under `arduino/peripheral/feather-express-aq-notify` and `arduino/peripheral/feather-sense-aq-notify`.  Relevant iOS app is under `ios/AQ Buzz`.
+Relevant Arduino code is under [`arduino/peripheral/feather-express-aq-notify`](https://github.com/chrisbartley/aq-buzz/blob/master/arduino/peripheral/feather-express-aq-notify) and [`arduino/peripheral/feather-sense-aq-notify`](https://github.com/chrisbartley/aq-buzz/blob/master/arduino/peripheral/feather-sense-aq-notify).  Relevant iOS app is under [`ios/AQ Buzz`](https://github.com/chrisbartley/aq-buzz/tree/master/ios/AQ%20Buzz).
 
 ### iOS App as Central + Arduino(s) as Connectionless, Broadcast-Only Peripheral(s)
 
@@ -60,4 +60,4 @@ Advertising payloads are also more limited in size than a BLE characteristic, so
 
 Finally, for home use, the security/privacy implications of broadcast-only peripherals are another strike against.  It's pretty easy to get a sense of whether someone is home, or at least to find trends when no one is home, by looking at a couple weeks of air quality data.  Broadcast-only peripherals provide no option to control who's "listening", in contrast to peripherals requiring a connection.  So it's not inconceivable that a Malicious Person Intent on Robbing You could set up a device within BLE range of your broadcast-only sensors and pretty quickly learn the times when you're typically not home.  The peripheral code referenced in the previous section doesn't include any sort of authentication/authorization, but it's at least an option and not too hard to implement.
 
-Relevant Arduino code is under `arduino/peripheral/feather-sense-aq-broadcast`, but I scrapped the iOS app for receiving the broadcasts because it seemed a little pointless.  
+Relevant Arduino code is under [`arduino/peripheral/feather-sense-aq-broadcast`](https://github.com/chrisbartley/aq-buzz/tree/master/arduino/peripheral/feather-sense-aq-broadcast), but I scrapped the iOS app for receiving the broadcasts because it seemed a little pointless.  
