@@ -46,7 +46,7 @@ Start by cutting the male and female headers into the group sizes we need.  As s
 * 8-pin right-angle female header 
 * 5-pin right-angle female header 
 
-<a href="./images/sense/medium/IMG_1627.jpg" target="zoom"><img src="./images/sense/small/IMG_1627.jpg"></a>
+<a href="./images/sense/large/IMG_1627.jpg" target="zoom"><img src="./images/sense/medium/IMG_1627.jpg" width="600"></a>
 
 Next, solder the short male header pins onto the FeatherWing Proto.  Make sure you put the pins in the breadboard long side down, and the protoboard is placed top-side up. You can put the other headers aside for now.
 
@@ -69,7 +69,7 @@ We'll now solder some short female headers onto the Feather Sense.  I used some 
 
 Do a test fit of the FeatherWing Proto on the Feather Sense and make sure everything lines up nicely.  And probably not a bad idea to do some quick continuity tests with a multimeter.
 
-<a href="./images/sense/medium/IMG_1575.jpg" target="zoom"><img src="./images/sense/small/IMG_1575.jpg"></a>
+<a href="./images/sense/large/IMG_1575.jpg" target="zoom"><img src="./images/sense/medium/IMG_1575.jpg" width="600"></a>
 
 ### SGP30
 
@@ -153,6 +153,7 @@ Now fit everything together and admire your work!  ...OK...well, do full continu
 ## Software
 
 ### Initial Setup
+
 For initial software setup, there's no point in my trying to improve on what Adafruit already offers, so it's really easiest to just start with their [excellent instructions](https://learn.adafruit.com/adafruit-feather-sense/arduino-support-setup) for getting your Arduino IDE all set up for the Feather Sense.  Do that first, and then it's probably not a bad idea to run some of their tests too:
 
 * [Arduino Board Testing](https://learn.adafruit.com/adafruit-feather-sense/arduino-board-testing)
