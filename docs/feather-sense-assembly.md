@@ -183,7 +183,7 @@ Now that you have an Arduino Feather Sense device built and setup, it's time to 
 
 The sections below describe each one in turn.
 
-For either of the scenarios below, don't forget that if this is your first time connecting either the Feather or your iOS device with your Buzz, you'll need to put the Buzz into pairing mode.  With the Buzz powered on, hold down the plus and minus buttons until the LEDs turn blue.  While the Feather scans for a Buzz, you'll see a small blue LED blinking on the feather.  Once connected to the Buzz, the blue LED should be steady on. 
+For either of the scenarios below, don't forget that if this is your first time connecting either the Feather or your iOS device with your Buzz, you'll need to put the Buzz into pairing mode.  With the Buzz powered on, hold down the plus and minus buttons until the LEDs turn blue.  While the Feather scans for a Buzz, you'll see a small blue LED blinking on the Feather.  Once connected to the Buzz, the blue LED should be steady on. 
  
 Be aware that it takes about 20 seconds for the SGP30 to warm up and start giving non-zero readings.  But you should soon start feeling buzzing in response to VOCs in the general vicinity.  You can test it out by putting it near foods (especially cooking), paint, alcohol, hand lotions, perfumes, etc.  You should feel the buzzing in the motor vibration increase or decrease in intensity relative to the tVOC level, and also "lean" toward one end of the band or the other depending on whether the tVOC values are trending up or down. Or, if the values are fairly steady, the middle two motors will vibrate.
 
@@ -197,7 +197,7 @@ Start by opening your Arduino IDE and loading the [feather-sense-aq-notify.ino](
 
 Open Xcode and run the [AQ Buzz](https://github.com/chrisbartley/aq-buzz/tree/master/ios/AQ%20Buzz) app on your iOS device. Once connected to both Buzz and Feather, the app should look something like the first screenshot below.  
 
-The AQ Buzz app can connect to multiple Feathers (see the second screenshot, below), and does proximity detection (BLE signal strength) between the iOS device and the Feathers, and sends vibrations to the Buzz according to which Feather is nearest.  So if you build more and put them around your house, you can walk around with Buzz on your wrist and the AQ Buzz app running on your phone in your pocket and feel the air quality as your move about your house.  The app orders the feathers by BLE signal strength, so you'll see them change order as you move closer to or farther from the Feathers.
+The AQ Buzz app can connect to multiple Feathers (see the second screenshot, below), and does proximity detection (BLE signal strength) between the iOS device and the Feathers, and sends vibrations to the Buzz according to which Feather is nearest.  So if you build more and put them around your house, you can walk around with Buzz on your wrist and the AQ Buzz app running on your phone in your pocket and feel the air quality as your move about your house.  The app orders the Feathers by BLE signal strength, so you'll see them change order as you move closer to or farther from the Feathers.
 
 <a href="./images/ios/aq-buzz-one-feather.png" target="zoom"><img src="./images/ios/aq-buzz-one-feather.png" width="300" border="1"></a>
 <a href="./images/ios/aq-buzz-two-feathers.png" target="zoom"><img src="./images/ios/aq-buzz-two-feathers.png" width="300" border="1"></a><br>
