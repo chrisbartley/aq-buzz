@@ -2,7 +2,7 @@
 
 # Feather Sense Device Assembly
 
-As described in the [README](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation.
+As mentioned in the [project description](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation.
 
 ## Parts List
 
@@ -32,9 +32,9 @@ Tip: all the thumbnails are linked to a higher-resolution version of the image.
 
 Start by soldering some short male header pins onto the FeatherWing Proto.  Make sure you put the pins in the breadboard long side down, and the protoboard is placed top-side up.
 
-<a href="./images/sense/medium/IMG_1562.jpg" target="zoom"><img src="./images/sense/small/IMG_1562.jpg" width="300" height="300"></a>
-<a href="./images/sense/medium/IMG_1564.jpg" target="zoom"><img src="./images/sense/small/IMG_1564.jpg" width="300" height="300"></a>
-<a href="./images/sense/medium/IMG_1565.jpg" target="zoom"><img src="./images/sense/small/IMG_1565.jpg" width="300" height="300"></a>
+<a href="./images/sense/medium/IMG_1562.jpg" target="zoom"><img src="./images/sense/small/IMG_1562.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1564.jpg" target="zoom"><img src="./images/sense/small/IMG_1564.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1565.jpg" target="zoom"><img src="./images/sense/small/IMG_1565.jpg" width="200" height="200"></a>
 
 
 ## Software
