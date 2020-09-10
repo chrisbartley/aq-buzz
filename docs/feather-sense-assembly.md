@@ -4,6 +4,8 @@
 
 As mentioned in the [project description](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation.
 
+As also described in the [project description](../README.md), I'm using the SGP30 to sense tVOCs.  To really use the SGP30 properly, though, it's best to have a humidity sensor, a real-time clock (RTC), and some means of storing some baseline calibration data in non-volatile memory. The Feather Sense has a humidity sensor on board, so we get that for free.  I chose Adafruit's PCF8523 breakout board for the RTC, and the Adafruit I2C FRAM breakout for non-volatile memory.  
+
 ## Parts List
 
 Adafruit is [currently selling through Digi-Key](https://www.adafruit.com/buyfromdigikey), so I've included Digi-Key links, too. 
@@ -19,22 +21,133 @@ Adafruit is [currently selling through Digi-Key](https://www.adafruit.com/buyfro
 * Right Angle Female Headers [[Digi-Key](https://www.digikey.com/product-detail/en/chip-quik-inc/HDR100IMP40F-G-RA-TH/HDR100IMP40F-G-RA-TH-ND/5978223)]
 * Right Angle Male Headers [[Digi-Key](https://www.digikey.com/product-detail/en/amphenol-icc-fci/68016-236HLF/609-2226-ND/1002541)]
 * Breadboard (for help in holding headers in place while soldering)
-* Breadboard wire
+* Breadboard wire: red, black, green, and yellow
 * Optional: [Lithium Ion Polymer Battery - 3.7V 400mAh](https://www.adafruit.com/product/3898) [[Digi-Key](https://www.digikey.com/product-detail/en/adafruit-industries-llc/3898/1528-2731-ND/9685336)]
+
+## Notes, Tips, and Disclaimers
+
+**Note**: I'm using green wire for all the SCL connections and yellow for SDA.  And, as usual, red and black for power and ground, respectively.
+
+**Tip**: thumbnails below are linked to a higher resolution version.
+
+**Disclaimer**: I'm a programmer, not an electrical engineer, so don't be surprised if you sense an overarching theme of weird layout choices and lousy soldering.  But, hey, it all worked, first try! 
 
 ## Build It!
 
-Disclaimer: I'm a programmer, not an electrical engineer, so don't be surprised if you sense an overarching theme of weird layout choices and lousy soldering.  But, hey, it worked, first try! 
-
-Tip: all the thumbnails are linked to a higher-resolution version of the image.
+OK, let's go!
 
 ### FeatherWing Proto
 
-Start by soldering some short male header pins onto the FeatherWing Proto.  Make sure you put the pins in the breadboard long side down, and the protoboard is placed top-side up.
+Start by cutting the male and female headers into the group sizes we need.  As shown in the photo, we need:
+ 
+* 4-pin short female header 
+* 3-pin short male header 
+* 12-pin short male header 
+* 8-pin right-angle female header 
+* 5-pin right-angle female header 
+
+<a href="./images/sense/medium/IMG_1627.jpg" target="zoom"><img src="./images/sense/small/IMG_1627.jpg"></a>
+
+Next, solder the short male header pins onto the FeatherWing Proto.  Make sure you put the pins in the breadboard long side down, and the protoboard is placed top-side up. You can put the other headers aside for now.
 
 <a href="./images/sense/medium/IMG_1562.jpg" target="zoom"><img src="./images/sense/small/IMG_1562.jpg" width="200" height="200"></a>
 <a href="./images/sense/medium/IMG_1564.jpg" target="zoom"><img src="./images/sense/small/IMG_1564.jpg" width="200" height="200"></a>
 <a href="./images/sense/medium/IMG_1565.jpg" target="zoom"><img src="./images/sense/small/IMG_1565.jpg" width="200" height="200"></a>
 
+### Female Headers on Feather Sense
+
+We'll now solder some short female headers onto the Feather Sense.  I used some long male headers pushed into a breadboard to stabilize things for soldering.
+
+<a href="./images/sense/medium/IMG_1566.jpg" target="zoom"><img src="./images/sense/small/IMG_1566.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1568.jpg" target="zoom"><img src="./images/sense/small/IMG_1568.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1570.jpg" target="zoom"><img src="./images/sense/small/IMG_1570.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1571.jpg" target="zoom"><img src="./images/sense/small/IMG_1571.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1573.jpg" target="zoom"><img src="./images/sense/small/IMG_1573.jpg" width="200" height="200"></a>
+<a href="./images/sense/medium/IMG_1574.jpg" target="zoom"><img src="./images/sense/small/IMG_1574.jpg" width="200" height="200"></a>
+ 
+### Test Fit
+
+Do a test fit of the FeatherWing Proto on the Feather Sense and make sure everything lines up nicely.  And probably not a bad idea to do some quick continuity tests with a multimeter.
+
+<a href="./images/sense/medium/IMG_1575.jpg" target="zoom"><img src="./images/sense/small/IMG_1575.jpg"></a>
+
+### SGP30
+
+Now solder some right-angle male header pins onto the underside of the SGP30.  Sensors aren't cheap, and sometimes they fail, so I wanted to be able to remove them easily rather than soldering directly on to the proto board.  I also wanted the finished device to be as short as possible, so the right-angle headers enable the SGP30 to sit nice and flat to the board.
+
+<a href="./images/sense/medium/IMG_1577.jpg" target="zoom"><img src="./images/sense/small/IMG_1577.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1579.jpg" target="zoom"><img src="./images/sense/small/IMG_1579.jpg" width="300"></a><br>
+<a href="./images/sense/medium/IMG_1580.jpg" target="zoom"><img src="./images/sense/small/IMG_1580.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1581.jpg" target="zoom"><img src="./images/sense/small/IMG_1581.jpg" width="300"></a>
+
+### I2C FRAM Breakout
+
+Do the same for the I2C FRAM Breakout.
+
+<a href="./images/sense/medium/IMG_1578.jpg" target="zoom"><img src="./images/sense/small/IMG_1578.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1583.jpg" target="zoom"><img src="./images/sense/small/IMG_1583.jpg" width="300"></a><br>
+<a href="./images/sense/medium/IMG_1584.jpg" target="zoom"><img src="./images/sense/small/IMG_1584.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1585.jpg" target="zoom"><img src="./images/sense/small/IMG_1585.jpg" width="300"></a>
+
+### RTC
+
+Go ahead and solder the 4-pin short female header onto the RTC breakout, with the long pins pointing down away from the board.
+
+<a href="./images/sense/medium/IMG_1616.jpg" target="zoom"><img src="./images/sense/small/IMG_1616.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1617.jpg" target="zoom"><img src="./images/sense/small/IMG_1617.jpg" width="300"></a>
+
+### Right-Angle Female Headers on the Proto Board
+
+Now get those right-angle female headers you cut in the beginning, and solder them onto the proto board.  But don't solder all the pins just yet--just do four of them.  Look carefully at the photos to see which four pins to solder.
+
+<a href="./images/sense/medium/IMG_1587.jpg" target="zoom"><img src="./images/sense/small/IMG_1587.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1630.jpg" target="zoom"><img src="./images/sense/small/IMG_1630.jpg" width="300"></a><br>
+<a href="./images/sense/medium/IMG_1591.jpg" target="zoom"><img src="./images/sense/small/IMG_1591.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1593.jpg" target="zoom"><img src="./images/sense/small/IMG_1593.jpg" width="300"></a>
+
+It should end up looking like this:
+
+<a href="./images/sense/large/IMG_1634.jpg" target="zoom"><img src="./images/sense/medium/IMG_1634.jpg" width="600"></a>
+
+Now is a good time to do another test fit and some continuity testing.
+
+<a href="./images/sense/large/IMG_1633.jpg" target="zoom"><img src="./images/sense/medium/IMG_1633.jpg" width="600"></a>
+
+### Wiring
+
+Get some green and yellow breadboard wire, and cut off enough insulation so that you can make a little right angle, like this, and feed it up from the bottom of the proto board and have the wire touch the female right-angle header pins.  Make sure green is SCL and yellow is SDA.  For now, only solder the two holes where the wire comes up through the board. 
+
+<a href="./images/sense/medium/IMG_1635.jpg" target="zoom"><img src="./images/sense/small/IMG_1635.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1636.jpg" target="zoom"><img src="./images/sense/small/IMG_1636.jpg" width="300"></a>
+
+Route those two wires as shown here, but don't solder yet.
+
+<a href="./images/sense/large/IMG_1637.jpg" target="zoom"><img src="./images/sense/medium/IMG_1637.jpg" width="600"></a>
+
+Get another pair of green and yellow wires and insert them here (same holes where the female right-angle header lives):
+
+<a href="./images/sense/large/IMG_1638.jpg" target="zoom"><img src="./images/sense/medium/IMG_1638.jpg" width="600"></a>
+
+The plan is to solder together the two yellow wires with the outermost header pin, and the two green ones to its neighbor, as shown here:
+
+<a href="./images/sense/medium/IMG_1639.jpg" target="zoom"><img src="./images/sense/small/IMG_1639.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1640.jpg" target="zoom"><img src="./images/sense/small/IMG_1640.jpg" width="300"></a>
+
+Now wire up power and ground, and finish off the yellow and green, as shown here.  **Note**: I unfortunately don't have a photo of it, but you'll need to have the short 4-pin female header on the other side of the board, connecting to those four wires all in a row (green, yellow, red, black) at the bottom of the last photo below in this section.  That header socket is where the RTC plugs in.
+
+<a href="./images/sense/medium/IMG_1641.jpg" target="zoom"><img src="./images/sense/small/IMG_1641.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1642.jpg" target="zoom"><img src="./images/sense/small/IMG_1642.jpg" width="300"></a><br>
+<a href="./images/sense/medium/IMG_1643.jpg" target="zoom"><img src="./images/sense/small/IMG_1643.jpg" width="300"></a>
+<a href="./images/sense/medium/IMG_1644.jpg" target="zoom"><img src="./images/sense/small/IMG_1644.jpg" width="300"></a><br>
+<a href="./images/sense/large/IMG_1645.jpg" target="zoom"><img src="./images/sense/medium/IMG_1645.jpg" width="600"></a>
+
+### Final Assembly and Testing
+
+Now fit everything together and admire your work!  ...OK...well, do full continuity tests and *then* admire your work.  ;-)
+
+<a href="./images/sense/large/IMG_1646.jpg" target="zoom"><img src="./images/sense/medium/IMG_1646.jpg" width="600"></a><br>
+<a href="./images/sense/large/IMG_1647.jpg" target="zoom"><img src="./images/sense/medium/IMG_1647.jpg" width="600"></a><br>
+<a href="./images/sense/large/IMG_1648.jpg" target="zoom"><img src="./images/sense/medium/IMG_1648.jpg" width="600"></a><br>
+<a href="./images/sense/large/IMG_1651.jpg" target="zoom"><img src="./images/sense/medium/IMG_1651.jpg" width="600"></a><br>
 
 ## Software
