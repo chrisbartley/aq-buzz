@@ -2,7 +2,7 @@
 
 # Feather Sense Device Assembly and Usage
 
-As mentioned in the [main project description](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation.
+As mentioned in the [main project description](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation and usage.
 
 As also described in the [project description](../README.md), I'm using the SGP30 to sense tVOCs.  To really use the SGP30 properly, though, it's best to have a humidity sensor, a real-time clock (RTC), and some means of storing some baseline calibration data in non-volatile memory. The Feather Sense has a humidity sensor on board, so we get that for free.  I chose Adafruit's PCF8523 breakout board for the RTC, and the Adafruit I2C FRAM breakout for non-volatile memory.  
 
