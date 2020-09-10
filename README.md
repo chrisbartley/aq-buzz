@@ -16,8 +16,8 @@ Both devices use the [Adafruit SGP30 breakout board](https://learn.adafruit.com/
 
 Details such as actual parts lists and assembly instructions are separate documents:
 
-* [Feather Sense Assembly](docs/feather-sense-assembly.md)
-* [Feather Express Assembly](docs/feather-express-assembly.md)
+* [Feather Sense Assembly](https://chrisbartley.github.io/aq-buzz/docs/feather-sense-assembly.html)
+* [Feather Express Assembly](https://chrisbartley.github.io/aq-buzz/docs/feather-express-assembly.html)
 
 ## Network Topologies
 
