@@ -16,8 +16,8 @@ Both devices use the [Adafruit SGP30 breakout board](https://learn.adafruit.com/
 
 Details such as actual parts lists and assembly instructions are in separate documents:
 
-* [Feather Sense Assembly](https://chrisbartley.github.io/aq-buzz/docs/feather-sense-assembly.html)
-* [Feather Express Assembly](https://chrisbartley.github.io/aq-buzz/docs/feather-express-assembly.html)
+* [Feather Sense Device Assembly and Usage](https://chrisbartley.github.io/aq-buzz/docs/feather-sense-assembly.html)
+* [Feather Express Device Assembly and Usage](https://chrisbartley.github.io/aq-buzz/docs/feather-express-assembly.html)
 
 You'll need a [Neosensory Buzz](https://neosensory.com/), too, of course, if you actually want to try any of this! :-)
 
