@@ -185,7 +185,7 @@ The sections below describe each one in turn.
 
 For either of the scenarios below, don't forget that if this is your first time connecting either the Feather or your iOS device with your Buzz, you'll need to put the Buzz into pairing mode.  With the Buzz powered on, hold down the plus and minus buttons until the LEDs turn blue.  While the Feather scans for a Buzz, you'll see a small blue LED blinking on the feather.  Once connected to the Buzz, the blue LED should be steady on. 
  
-Be aware that it takes about 20 seconds for the SGP30 to warm up and start giving non-zero readings.  But you should soon start feeling buzzing in response to VOCs in the general vicinity.  You can test it out by putting it near foods (especially cooking), paint, alcohol, hand lotions, perfumes, etc.  You should feel the buzzing in the motors "lean" increase or decrease in intensity relative to the tVOC level, and also "lean" toward one end of the band or the other depending on whether the tVOC values are trending up or down. Or, if the values are fairly steady, the middle two motors will vibrate.
+Be aware that it takes about 20 seconds for the SGP30 to warm up and start giving non-zero readings.  But you should soon start feeling buzzing in response to VOCs in the general vicinity.  You can test it out by putting it near foods (especially cooking), paint, alcohol, hand lotions, perfumes, etc.  You should feel the buzzing in the motor vibration increase or decrease in intensity relative to the tVOC level, and also "lean" toward one end of the band or the other depending on whether the tVOC values are trending up or down. Or, if the values are fairly steady, the middle two motors will vibrate.
 
 ### Feather Sense --> Buzz
 
