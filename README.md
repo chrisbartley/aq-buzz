@@ -14,10 +14,12 @@ I ended up building two similar, but slightly different Arduino Feather devices.
 
 Both devices use the [Adafruit SGP30 breakout board](https://learn.adafruit.com/adafruit-sgp30-gas-tvoc-eco2-mox-sensor) for measuring total VOCs (tVOC).  The differences in the resulting devices come in the extras required--or at least recommended--to use the SGP30 properly.  The SGP30 does baseline calibration, and you can read out calibration values so that, upon power-cyle, you can initialize the sensor with the last known baseline values.  If you don't, then Sensirion recommends waiting at least 12 hours before you can trust the readings.  And you should also read and store the baseline values hourly after the initial 12-hour calibration.  *And* not trust any baseline values older than one week.  All of which imply that you have both some means of storing baseline values in non-volatile memory *and* some means of knowing what time it is now, and when you last wrote the values...so you need a real-time clock on board too.  To make things a little more complex, they also recommend you have a humidity sensor so you can take advantage of the SGP30's optional humidity compensation feature.
 
-Details such as actual parts lists and assembly instructions are separate documents:
+Details such as actual parts lists and assembly instructions are in separate documents:
 
 * [Feather Sense Assembly](https://chrisbartley.github.io/aq-buzz/docs/feather-sense-assembly.html)
 * [Feather Express Assembly](https://chrisbartley.github.io/aq-buzz/docs/feather-express-assembly.html)
+
+You'll need a [Neosensory Buzz](https://neosensory.com/), too, of course, if you actually want to try any of this! :-)
 
 ## Network Topologies
 

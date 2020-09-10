@@ -1,8 +1,8 @@
 ![Feather Sense Device](./images/sense/banner.jpg)
 
-# Feather Sense Device Assembly
+# Feather Sense Device Assembly and Usage
 
-As mentioned in the [project description](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation.
+As mentioned in the [main project description](../README.md), one of the two Arduino-based devices I created for this project is built around the [Adafruit Feather nRF52840 Sense](https://learn.adafruit.com/adafruit-feather-sense).  This document contains the parts list, details of the build process, and an overview of software installation.
 
 As also described in the [project description](../README.md), I'm using the SGP30 to sense tVOCs.  To really use the SGP30 properly, though, it's best to have a humidity sensor, a real-time clock (RTC), and some means of storing some baseline calibration data in non-volatile memory. The Feather Sense has a humidity sensor on board, so we get that for free.  I chose Adafruit's PCF8523 breakout board for the RTC, and the Adafruit I2C FRAM breakout for non-volatile memory.  
 
@@ -151,3 +151,52 @@ Now fit everything together and admire your work!  ...OK...well, do full continu
 <a href="./images/sense/large/IMG_1651.jpg" target="zoom"><img src="./images/sense/medium/IMG_1651.jpg" width="600"></a><br>
 
 ## Software
+
+### Initial Setup
+For initial software setup, there's no point in my trying to improve on what Adafruit already offers, so it's really easiest to just start with their [excellent instructions](https://learn.adafruit.com/adafruit-feather-sense/arduino-support-setup) for getting your Arduino IDE all set up for the Feather Sense.  Do that first, and then it's probably not a bad idea to run some of their tests too:
+
+* [Arduino Board Testing](https://learn.adafruit.com/adafruit-feather-sense/arduino-board-testing)
+* [Arduino Sensor Example](https://learn.adafruit.com/adafruit-feather-sense/arduino-sensor-example)
+
+You'll also need set the RTC's time.  Insert the coin cell battery to the RTC breakout, and follow [Adafruit's RTC setup instructions](https://learn.adafruit.com/adafruit-pcf8523-real-time-clock/rtc-with-arduino).
+
+### Libraries
+
+After that, go ahead and install the following libraries (or make sure they're already installed and up to date):
+
+* [Neosensory Arduino Bluefruit SDK](https://neosensory.github.io/neosensory-sdk-for-bluefruit/)
+* Adafruit_BMP280
+* Adafruit_SHT31
+* Adafruit_SGP30
+* Adafruit_FRAM_I2C
+* Adafruit's fork of JeeLab's RTClib (make sure you're using the Adafruit one!)
+* AgileWare's [CircularBuffer](https://github.com/rlogiacco/CircularBuffer)
+* [Regressino](https://github.com/cubiwan/Regressino)
+
+## Play Time!
+
+Now that you have an Arduino Feather Sense device built and setup, it's time to get it talking to your Buzz!  This project provides two options for doing so (see the [main project description](../README.md) for more details about network topology options and pros/cons):
+
+* Feather Sense directly controlling the Buzz
+* An iOS device acting as a proxy between the Feather Sense and the Buzz
+
+The sections below describe each one in turn.
+
+For either of the scenarios below, don't forget that if this is your first time connecting either the Feather or your iOS device with your Buzz, you'll need to put the Buzz into pairing mode.  With the Buzz powered on, hold down the plus and minus buttons until the LEDs turn blue.  While the Feather scans for a Buzz, you'll see a small blue LED blinking on the feather.  Once connected to the Buzz, the blue LED should be steady on. 
+ 
+Be aware that it takes about 20 seconds for the SGP30 to warm up and start giving non-zero readings.  But you should soon start feeling buzzing in response to VOCs in the general vicinity.  You can test it out by putting it near foods (especially cooking), paint, alcohol, hand lotions, perfumes, etc.  You should feel the buzzing in the motors "lean" increase or decrease in intensity relative to the tVOC level, and also "lean" toward one end of the band or the other depending on whether the tVOC values are trending up or down. Or, if the values are fairly steady, the middle two motors will vibrate.
+
+### Feather Sense --> Buzz
+
+Open your Arduino IDE and load the [feather-sense-aq.ino](https://github.com/chrisbartley/aq-buzz/blob/master/arduino/central/feather-sense-aq/feather-sense-aq.ino) sketch onto your Feather Sense.  Once it's running, the Feather will continuously search for a Buzz until it finds one it can connect to.  For the first try, it might be worth leaving the Feather connected to your computer with the USB cable so that you want watch the output either in the Arduino Serial Monitor or Arduino Serial Plotter. 
+
+### Feather Sense --> iOS --> Buzz
+
+Start by opening your Arduino IDE and loading the [feather-sense-aq-notify.ino](https://github.com/chrisbartley/aq-buzz/blob/master/arduino/peripheral/feather-sense-aq-notify/feather-sense-aq-notify.ino) sketch onto your Feather Sense.  Once it's running, the Feather will wait for the iOS device to connect to it and then start broadcasting data samples.  For the first try, it might be worth leaving the Feather connected to your computer with the USB cable so that you want watch the output either in the Arduino Serial Monitor or Arduino Serial Plotter. 
+
+Open Xcode and run the [AQ Buzz](https://github.com/chrisbartley/aq-buzz/tree/master/ios/AQ%20Buzz) app on your iOS device. Once connected to both Buzz and Feather, the app should look something like the first screenshot below.  
+
+The AQ Buzz app can connect to multiple Feathers (see the second screenshot, below), and does proximity detection (BLE signal strength) between the iOS device and the Feathers, and sends vibrations to the Buzz according to which Feather is nearest.  So if you build more and put them around your house, you can walk around with Buzz on your wrist and the AQ Buzz app running on your phone in your pocket and feel the air quality as your move about your house.  The app orders the feathers by BLE signal strength, so you'll see them change order as you move closer to or farther from the Feathers.
+
+<a href="./images/ios/aq-buzz-one-feather.png" target="zoom"><img src="./images/ios/aq-buzz-one-feather.png" width="300" border="1"></a>
+<a href="./images/ios/aq-buzz-two-feathers.png" target="zoom"><img src="./images/ios/aq-buzz-two-feathers.png" width="300" border="1"></a><br>
