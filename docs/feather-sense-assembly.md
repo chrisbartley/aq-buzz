@@ -26,14 +26,11 @@ Adafruit is [currently selling through Digi-Key](https://www.adafruit.com/buyfro
 
 Disclaimer: I'm a programmer, not an electrical engineer, so don't be surprised if you sense an overarching theme of weird layout choices and lousy soldering.  But, hey, it worked, first try! 
 
-Start by soldering some short male header pins onto the FeatherWing Proto.  Make sure you put the pins in the breadboard long side down!
+Start by soldering some short male header pins onto the FeatherWing Proto.  Make sure you put the pins in the breadboard long side down, and the protoboard is placed top-side up.
 
-<table cellpadding="3" cellspacing="0" border="0">
-    <tr>
-        <td><a href="./images/sense/medium/IMG_1562.jpg" target="zoom"><img src="./images/sense/small/IMG_1562.jpg"></a></td>
-        <td><a href="./images/sense/medium/IMG_1564.jpg" target="zoom"><img src="./images/sense/small/IMG_1564.jpg"></a></td>
-        <td><a href="./images/sense/medium/IMG_1565.jpg" target="zoom"><img src="./images/sense/small/IMG_1565.jpg"></a></td>
-    </tr>
-</table>
+<a href="./images/sense/medium/IMG_1562.jpg" target="zoom"><img src="./images/sense/small/IMG_1562.jpg"></a>
+<a href="./images/sense/medium/IMG_1564.jpg" target="zoom"><img src="./images/sense/small/IMG_1564.jpg"></a>
+<a href="./images/sense/medium/IMG_1565.jpg" target="zoom"><img src="./images/sense/small/IMG_1565.jpg"></a>
+
 
 ## Software
