@@ -3,6 +3,8 @@
 
  Chris Bartley <chris@chrisbartley.com>
  2020-09-02
+
+ Copyright (c) 2020 Chris Bartley. Licensed under the MIT license. See LICENSE file.
 ***********************************************************************************************************************/
 
 #include <Adafruit_BME680.h>

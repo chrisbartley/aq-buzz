@@ -3,7 +3,7 @@
 //  AQ Buzz
 //
 //  Created by Chris Bartley on 9/7/20.
-//  Copyright © 2020 Chris Bartley. All rights reserved.
+//  Copyright (c) 2020 Chris Bartley. Licensed under the MIT license. See LICENSE file.
 //
 
 import UIKit
