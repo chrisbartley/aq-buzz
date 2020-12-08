@@ -404,16 +404,16 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:chrisbartley/BuzzBLE.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
 			};
 		};
 		8379CF382504B7B400764923 /* XCRemoteSwiftPackageReference "BirdbrainBLE" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:chrisbartley/BirdbrainBLE.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.7.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
